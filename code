@@ -1,0 +1,71 @@
+import os
+import sys
+import time
+import pigpio
+
+ESC=4
+
+pi = pigpio.pi()
+pi.set_servo_pulsewidth(ESC,0)
+
+max_value = 2000
+min_value = 700
+
+print("calibrate   OR   control   OR   stop")
+def calibrate():
+    pi.set_servo_pulsewidth(ESC,0)
+    print(" press enter")
+    inp = raw_input()
+    if inp == '':
+        pi.set_servo_pulsewidth(ESC, max_value)
+        print("connect battery now ")
+        inp = raw_input()
+        if inp == '':
+            pi.set_servo_pulsewidth(ESC,min_value)
+            time.sleep(15)
+            pi.set_servo_pulsewidth(ESC,0)
+            time.sleep(3)
+            pi.set_servo_pulsewidth(ESC,min_value)
+            time.sleep(2)
+            control()
+def control():
+    speed = int(input("enter the speed in rpm:  "))
+    print("controls:  a->>decrease, d->>increase, ")
+    while True:
+         pi.set_servo_pulsewidth(ESC, speed)
+         inp = raw_input()
+         if inp == "a":
+             speed -= 50
+             print ("speed = %d") % speed
+         elif inp == "d":
+             speed +=50
+             print ("speed = %d") % speed
+         elif inp == "stop":
+             stop()
+             break
+         else:
+             print("wrong option")
+def stop():
+    pi.set_servo_pulsewidth(ESC,0)
+    pi.stop()
+
+
+inp = raw_input()
+if inp == "calibrate":
+    calibrate()
+elif inp =="control":
+    control()
+elif inp == "stop":
+    stop()
+else:
+    print("plzz check wat u hav typed :)")
+
+ 
+            
+            
+            
+        
+        
+    
+
+
